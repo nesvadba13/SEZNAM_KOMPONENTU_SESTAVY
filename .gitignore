@@ -214,3 +214,8 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+/.vs/SEZNAM_KOMPONENTU_SESTAVY/FileContentIndex/831db2ee-9031-40eb-b351-4b28e19c187c.vsidx
+/.vs/SEZNAM_KOMPONENTU_SESTAVY/FileContentIndex/847e6153-0c90-4a55-a7b1-d6942fe68215.vsidx
+/.vs/SEZNAM_KOMPONENTU_SESTAVY/FileContentIndex/ec10a669-c603-44cb-9e1e-9f917ea13df9.vsidx
+/.vs/SEZNAM_KOMPONENTU_SESTAVY/FileContentIndex/fedcb4d3-915c-4b68-9d89-3e2098adccb7.vsidx
+*.vsidx
