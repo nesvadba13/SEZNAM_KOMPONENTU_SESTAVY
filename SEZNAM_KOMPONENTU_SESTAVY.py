@@ -48,7 +48,25 @@ class GuiContext:
         self.current_active_model = ""
         self.poll_countdown = 0
         self.export_running = False
-        self.output_directory = ""  # uživatelem zvolená složka
+        self.output_directory = ""
+
+
+def _load_logo() -> Optional[ImageTk.PhotoImage]:
+    """Nacte a upravi logo pro zobrazeni."""
+    try:
+        # cesta k logu vzhledem ke skriptu
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        logo_path = os.path.join(script_dir, "obrázky", "LC_Lifts.jpg")
+        
+        if os.path.exists(logo_path):
+            # nacti a zmensi logo
+            image = Image.open(logo_path)
+            # zachovej proporce, max vyska 60px
+            image.thumbnail((120, 60), Image.Resampling.LANCZOS)
+            return ImageTk.PhotoImage(image)
+    except Exception as e:
+        _debug(f"Nepodařilo se načíst logo: {e}")
+    return None
 
 
 def _normalize_filename(name: str) -> str:
@@ -625,7 +643,7 @@ def _create_main_window(client: creopyson.Client) -> GuiContext:
     main_frame = ttk.Frame(root, padding=8)
     main_frame.pack(fill="both", expand=True)
 
-    # ── Horni panel: konfigurace + aktivni sestava ───────────────────────────
+    # ── Horni panel: konfigurace + logo ──────────────────────────────────────
     top_frame = ttk.LabelFrame(main_frame, text="Nastaveni", padding=6)
     top_frame.grid(row=0, column=0, columnspan=2, sticky="ew", pady=(0, 6))
     top_frame.columnconfigure(4, weight=1)
@@ -646,7 +664,14 @@ def _create_main_window(client: creopyson.Client) -> GuiContext:
         if folder:
             _gui_set_output_dir(gui, folder)
     
-    ttk.Button(top_frame, text="Vybrat slozku", command=choose_output_dir).grid(row=0, column=4, sticky="e")
+    ttk.Button(top_frame, text="Vybrat slozku", command=choose_output_dir).grid(row=0, column=4, sticky="e", padx=(16, 0))
+
+    # logo vpravo nahore
+    logo = _load_logo()
+    if logo:
+        logo_label = ttk.Label(top_frame, image=logo)
+        logo_label.image = logo  # uchovat referenci
+        logo_label.grid(row=0, column=5, rowspan=3, sticky="ne", padx=(8, 0))
 
     active_asm_label = ttk.Label(top_frame, text="Aktivni model: (neznamy) | Obnova za: 0 s", anchor="w", foreground="gray")
     active_asm_label.grid(row=1, column=0, columnspan=5, sticky="ew", pady=(4, 0))
