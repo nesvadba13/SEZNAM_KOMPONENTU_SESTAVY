@@ -619,11 +619,11 @@ def _poll_active_asm(client: creopyson.Client, gui: GuiContext) -> None:
         except Exception:
             pass
         
-        gui.poll_countdown = 15
+        gui.poll_countdown = 5
         _update_status_label(gui)
     
     if not gui.should_stop:
-        gui.root.after(15_000, _poll_active_asm, client, gui)
+        gui.root.after(5_000, _poll_active_asm, client, gui)
 
 
 def _countdown_tick(gui: GuiContext) -> None:
@@ -655,9 +655,9 @@ def _create_main_window(client: creopyson.Client) -> GuiContext:
     asm_var = tk.BooleanVar(value=INCLUDE_ASSEMBLIES)
 
     ttk.Checkbutton(top_frame, text="PDF", variable=pdf_var).grid(row=0, column=0, sticky="w", padx=(0, 8))
-    ttk.Checkbutton(top_frame, text="DXF", variable=dxf_var).grid(row=0, column=1, sticky="w", padx=(0, 8))
-    ttk.Checkbutton(top_frame, text="STEP", variable=step_var).grid(row=0, column=2, sticky="w", padx=(0, 8))
-    ttk.Checkbutton(top_frame, text="Sestavy (ASM)", variable=asm_var).grid(row=0, column=3, sticky="w", padx=(0, 16))
+    ttk.Checkbutton(top_frame, text="DXF", variable=dxf_var).grid(row=1, column=0, sticky="w", padx=(0, 8))
+    ttk.Checkbutton(top_frame, text="STEP", variable=step_var).grid(row=2, column=0, sticky="w", padx=(0, 8))
+    ttk.Checkbutton(top_frame, text="Sestavy (ASM)", variable=asm_var).grid(row=3, column=0, sticky="w", padx=(0, 16))
 
     # tlacitko pro vyber vystupni slozky
     def choose_output_dir():
@@ -665,7 +665,7 @@ def _create_main_window(client: creopyson.Client) -> GuiContext:
         if folder:
             _gui_set_output_dir(gui, folder)
     
-    ttk.Button(top_frame, text="Vybrat slozku", command=choose_output_dir).grid(row=0, column=4, sticky="e", padx=(16, 0))
+    ttk.Button(top_frame, text="Vybrat slozku", command=choose_output_dir).grid(row=5, column=5, sticky="e", padx=(16, 0))
 
     # logo vpravo nahore
     logo = _load_logo()
@@ -675,10 +675,10 @@ def _create_main_window(client: creopyson.Client) -> GuiContext:
         logo_label.grid(row=0, column=5, rowspan=3, sticky="ne", padx=(8, 0))
 
     active_asm_label = ttk.Label(top_frame, text="Aktivni model: (neznamy) | Obnova za: 0 s", anchor="w", foreground="gray")
-    active_asm_label.grid(row=1, column=0, columnspan=5, sticky="ew", pady=(4, 0))
+    active_asm_label.grid(row=4, column=0, columnspan=5, sticky="ew", pady=(4, 0))
 
     output_dir_label = ttk.Label(top_frame, text="Vystupni slozka: (implicitne DXF+PDF)", anchor="w", foreground="blue")
-    output_dir_label.grid(row=2, column=0, columnspan=5, sticky="ew")
+    output_dir_label.grid(row=5, column=0, columnspan=5, sticky="ew")
 
     # ── Tabulka vysledku ─────────────────────────────────────────────────────
     tree_cols = ("model", "pdf", "dxf", "step")
