@@ -13,6 +13,7 @@ import queue
 import creopyson
 import tkinter as tk
 from tkinter import ttk, filedialog
+from PIL import Image, ImageTk
 
 DEBUG = False
 DEBUG_TO_STDOUT = False
