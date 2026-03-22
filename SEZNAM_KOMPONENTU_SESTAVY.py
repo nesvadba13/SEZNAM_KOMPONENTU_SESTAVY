@@ -308,6 +308,16 @@ def _ensure_output_dir(client: creopyson.Client, custom_dir: str = "") -> str:
     return target
 
 
+def _get_default_output_dir(client: creopyson.Client) -> str:
+    """Získá výchozí výstupní složku (DXF+PDF v pracovním adresáři)."""
+    try:
+        base = creopyson.creo.pwd(client)
+    except Exception as exc:
+        _debug(f"creo.pwd vyjimka: {exc!r}")
+        base = "."
+    return os.path.join(base, "DXF+PDF")
+
+
 def _gui_log(gui: Optional[GuiContext], message: str) -> None:
     if gui is None:
         return
@@ -659,13 +669,19 @@ def _create_main_window(client: creopyson.Client) -> GuiContext:
     ttk.Checkbutton(top_frame, text="STEP", variable=step_var).grid(row=2, column=0, sticky="w", padx=(0, 8))
     ttk.Checkbutton(top_frame, text="Sestavy (ASM)", variable=asm_var).grid(row=3, column=0, sticky="w", padx=(0, 16))
 
-    # tlacitko pro vyber vystupni slozky
+    # tlacitko pro nastaveni vychozi slozky
+    def set_default_output_dir():
+        default_dir = _get_default_output_dir(client)
+        _gui_set_output_dir(gui, "")  # prazdny string znamena pouzij vychozi
+    
+    # tlacitko pro vyber vlastni vystupni slozky
     def choose_output_dir():
         folder = filedialog.askdirectory(title="Vyberte vystupni slozku")
         if folder:
             _gui_set_output_dir(gui, folder)
     
-    ttk.Button(top_frame, text="Vybrat slozku", command=choose_output_dir).grid(row=5, column=5, sticky="e", padx=(16, 0))
+    ttk.Button(top_frame, text="Vychozi slozka", command=set_default_output_dir).grid(row=6, column=5, sticky="e", padx=(8, 4))
+    ttk.Button(top_frame, text="Vybrat slozku", command=choose_output_dir).grid(row=6, column=4, sticky="e", padx=(4, 0))
 
     # logo vpravo nahore
     logo = _load_logo()
@@ -675,10 +691,10 @@ def _create_main_window(client: creopyson.Client) -> GuiContext:
         logo_label.grid(row=0, column=5, rowspan=3, sticky="ne", padx=(8, 0))
 
     active_asm_label = ttk.Label(top_frame, text="Aktivni model: (neznamy) | Obnova za: 0 s", anchor="w", foreground="gray")
-    active_asm_label.grid(row=4, column=0, columnspan=5, sticky="ew", pady=(4, 0))
+    active_asm_label.grid(row=4, column=0, columnspan=6, sticky="ew", pady=(4, 0))
 
     output_dir_label = ttk.Label(top_frame, text="Vystupni slozka: (implicitne DXF+PDF)", anchor="w", foreground="blue")
-    output_dir_label.grid(row=5, column=0, columnspan=5, sticky="ew")
+    output_dir_label.grid(row=6, column=0, columnspan=4, sticky="ew")
 
     # ── Tabulka vysledku ─────────────────────────────────────────────────────
     tree_cols = ("model", "pdf", "dxf", "step")
